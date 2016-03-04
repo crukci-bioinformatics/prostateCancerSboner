@@ -12,5 +12,5 @@
     \author{
 Mark Dunning
     }
-    \usage{varambally}
+    \usage{sboner}
     \keyword{datasets}
