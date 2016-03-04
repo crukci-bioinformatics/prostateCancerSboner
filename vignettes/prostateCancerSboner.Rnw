@@ -1,0 +1,53 @@
+%\VignetteKeywords{Database}
+%\VignetteDepends{prostateCancerSboner}
+%\VignettePackage{prostateCancerSboner}
+%\VignetteIndexEntry{prostateCancerSboner}
+\documentclass{article}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\emph{ Molecular sampling of prostate cancer: a dilemma for predicting disease progression}
+
+\emph{Sboner A, Demichelis F, Calza S, Pawitan Y et al. Molecular sampling of prostate cancer: a dilemma for predicting disease progression. BMC Med Genomics 2010 Mar 16;3:8. }
+
+
+In this document, I describe how the GEO data entry for the Sboner data was processed and saved into an object for analysis in Bioconductor. First of all load the relevant libraries for grabbing and manipulaing the data
+
+<<eval=FALSE>>=
+library(GEOquery)
+@
+
+
+Now use the `getGEO` function with the correct ID
+
+<<eval=FALSE>>=
+geoData <- getGEO("GSE16560")[[1]]
+geoData
+@
+
+The phenoData contains lots of metadata from GEO that probably won't be useful for our analysis and needs cleaning-up. 
+
+<<eval=FALSE>>=
+pd <- pData(geoData)
+covars <- data.frame(Sample=pd$title,
+          geo_accession = pd$geo_accession,
+          Gleason = gsub("gleason: ","",pd$characteristics_ch1),
+          Major.Gleason = gsub("major.gleason: ","",pd$characteristics_ch1.1),
+          Minor.Gleason = gsub("minor.gleason: ","",pd$characteristics_ch1.2),
+          Batch = gsub("batch: ","",pd$characteristics_ch1.4),
+          Extreme=gsub("extreme: ","",pd$characteristics_ch1.4),
+          Cellularity = gsub("cancer.percent: ","",pd$characteristics_ch1.5),
+          Age = gsub("age: ","",pd$characteristics_ch1.6),
+          Year.Of.Diagnosis = gsub("diag.yr: ","",pd$characteristics_ch1.7),
+          Status = gsub("status.all: ","",pd$characteristics_ch1.8),
+          Follow.Up = gsub("fup.month: ","",pd$characteristics_ch1.9),
+          Fusion = gsub("fusion: ","",pd$characteristics_ch1.10)
+)
+pData(geoData) <- covars
+sboner <- geoData
+save(sboner, file="data/sboner.rda",compress="xz")
+@
+
+
+\end{document}
