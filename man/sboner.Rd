@@ -1,6 +1,6 @@
  \docType{data}
-    \name{varambally}
-    \alias{varambally}
+    \name{sboner}
+    \alias{sboner}
     \title{The Sboner Cohort}
     \format{a \code{ExpressionSet} instance, 1 row per Affymetrix microarray probe.}
     \source{
